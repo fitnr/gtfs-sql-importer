@@ -1,4 +1,6 @@
 CREATE SCHEMA gtfs;
+CREATE EXTENSION postgis;
+
 
 DROP TABLE IF EXISTS gtfs.agency cascade;
 DROP TABLE IF EXISTS gtfs.stops cascade;
