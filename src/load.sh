@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 TABLES="agency calendar calendar_dates routes shapes stops trips stop_times transfers frequencies fare_attributes fare_rules"
 
@@ -15,7 +15,7 @@ function import_stdin()
     # remove possible BOM
     hed=$(unzip -p "$ZIP" "${1}.txt" | head -n 1 | awk '{sub(/^\xef\xbb\xbf/,"")}{print}')
     echo "COPY gtfs.${1}" 1>&2
-    unzip -p "$ZIP" "${1}.txt" | awk '{ sub(/\r$/,""); sub(",\"\"", ","); print }' | psql -c "COPY gtfs.${1} (${hed}) FROM STDIN WITH DELIMITER AS ',' HEADER CSV"
+    unzip -p "$ZIP" "${1}.txt" | awk '{ sub(/\r$/,""); gsub(",\"\"", ","); print }' | psql -c "COPY gtfs.${1} (${hed}) FROM STDIN WITH DELIMITER AS ',' HEADER CSV"
 }
 
 ADD_DATES=
