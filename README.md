@@ -1,8 +1,10 @@
 # About
-Quick & easy import of GTFS data into a PostgreSQL database.
+Quick & easy import of GTFS data into a PostgreSQL database. 
 
 * [GTFS (General Transit Feed Specification)](http://code.google.com/transit/spec/transit_feed_specification.html)
 * [Transitfeed](http://transitfeeds.com) (index and archive of GTFS data sets)
+
+**This fork contains** improvements to stability and takes into consideration errors in many datasets.
 
 ## Requirements
 
