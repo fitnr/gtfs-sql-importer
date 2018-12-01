@@ -30,31 +30,31 @@ BEGIN;
 
 CREATE TABLE gtfs.feed_info (
   feed_index serial PRIMARY KEY, -- tracks uploads, avoids key collisions
-  feed_publisher_name text default null,
-  feed_publisher_url text default null,
-  feed_timezone text default null,
-  feed_lang text default null,
-  feed_version text default null,
-  feed_start_date date default null,
-  feed_end_date date default null,
-  feed_id text default null,
-  feed_contact_url text default null,
+  feed_publisher_name text DEFAULT NULL,
+  feed_publisher_url text DEFAULT NULL,
+  feed_timezone text DEFAULT NULL,
+  feed_lang text DEFAULT NULL,
+  feed_version text DEFAULT NULL,
+  feed_start_date date DEFAULT NULL,
+  feed_end_date date DEFAULT NULL,
+  feed_id text DEFAULT NULL,
+  feed_contact_url text DEFAULT NULL,
   feed_download_date date,
   feed_file text
 );
 
 CREATE TABLE gtfs.agency (
   feed_index integer REFERENCES gtfs.feed_info (feed_index),
-  agency_id text default '',
-  agency_name text default null,
-  agency_url text default null,
-  agency_timezone text default null,
+  agency_id text DEFAULT '',
+  agency_name text DEFAULT NULL,
+  agency_url text DEFAULT NULL,
+  agency_timezone text DEFAULT NULL,
   -- optional
-  agency_lang text default null,
-  agency_phone text default null,
-  agency_fare_url text default null,
-  agency_email text default null,
-  bikes_policy_url text default null,
+  agency_lang text DEFAULT NULL,
+  agency_phone text DEFAULT NULL,
+  agency_fare_url text DEFAULT NULL,
+  agency_email text DEFAULT NULL,
+  bikes_policy_url text DEFAULT NULL,
   CONSTRAINT gtfs_agency_pkey PRIMARY KEY (feed_index, agency_id)
 );
 
@@ -99,17 +99,17 @@ CREATE TABLE gtfs.timepoints (
 );
 
 CREATE TABLE gtfs.calendar (
-  feed_index integer not null,
+  feed_index integer NOT NULL,
   service_id text,
-  monday int not null,
-  tuesday int not null,
-  wednesday int not null,
-  thursday int not null,
-  friday int not null,
-  saturday int not null,
-  sunday int not null,
-  start_date date not null,
-  end_date date not null,
+  monday int NOT NULL,
+  tuesday int NOT NULL,
+  wednesday int NOT NULL,
+  thursday int NOT NULL,
+  friday int NOT NULL,
+  saturday int NOT NULL,
+  sunday int NOT NULL,
+  start_date date NOT NULL,
+  end_date date NOT NULL,
   CONSTRAINT gtfs_calendar_pkey PRIMARY KEY (feed_index, service_id),
   CONSTRAINT gtfs_calendar_feed_fkey FOREIGN KEY (feed_index)
     REFERENCES gtfs.feed_info (feed_index) ON DELETE CASCADE
@@ -117,10 +117,10 @@ CREATE TABLE gtfs.calendar (
 CREATE INDEX gtfs_calendar_service_id ON gtfs.calendar (service_id);
 
 CREATE TABLE gtfs.stops (
-  feed_index int not null,
+  feed_index int NOT NULL,
   stop_id text,
-  stop_name text default null,
-  stop_desc text default null,
+  stop_name text DEFAULT NULL,
+  stop_desc text DEFAULT NULL,
   stop_lat double precision,
   stop_lon double precision,
   zone_id text,
@@ -133,14 +133,14 @@ CREATE TABLE gtfs.stops (
   stop_country text,
   stop_timezone text,
   direction text,
-  position text default null,
-  parent_station text default null,
-  wheelchair_boarding integer default null REFERENCES gtfs.wheelchair_boardings (wheelchair_boarding),
-  wheelchair_accessible integer default null REFERENCES gtfs.wheelchair_accessible (wheelchair_accessible),
+  position text DEFAULT NULL,
+  parent_station text DEFAULT NULL,
+  wheelchair_boarding integer DEFAULT NULL REFERENCES gtfs.wheelchair_boardings (wheelchair_boarding),
+  wheelchair_accessible integer DEFAULT NULL REFERENCES gtfs.wheelchair_accessible (wheelchair_accessible),
   -- optional
-  location_type integer default null REFERENCES gtfs.location_types (location_type),
-  vehicle_type int default null,
-  platform_code text default null,
+  location_type integer DEFAULT NULL REFERENCES gtfs.location_types (location_type),
+  vehicle_type int DEFAULT NULL,
+  platform_code text DEFAULT NULL,
   CONSTRAINT gtfs_stops_pkey PRIMARY KEY (feed_index, stop_id)
 );
 SELECT AddGeometryColumn('gtfs', 'stops', 'the_geom', 4326, 'POINT', 2);
@@ -162,18 +162,18 @@ CREATE TABLE gtfs.route_types (
 );
 
 CREATE TABLE gtfs.routes (
-  feed_index int not null,
+  feed_index int NOT NULL,
   route_id text,
   agency_id text,
-  route_short_name text default '',
-  route_long_name text default '',
-  route_desc text default '',
+  route_short_name text DEFAULT '',
+  route_long_name text DEFAULT '',
+  route_desc text DEFAULT '',
   route_type int REFERENCES gtfs.route_types(route_type),
   route_url text,
   route_color text,
   route_text_color text,
   -- unofficial
-  route_sort_order integer default null,
+  route_sort_order integer DEFAULT NULL,
   CONSTRAINT gtfs_routes_pkey PRIMARY KEY (feed_index, route_id),
   -- CONSTRAINT gtfs_routes_fkey FOREIGN KEY (feed_index, agency_id)
   --   REFERENCES gtfs.agency (feed_index, agency_id),
@@ -182,9 +182,9 @@ CREATE TABLE gtfs.routes (
 );
 
 CREATE TABLE gtfs.calendar_dates (
-  feed_index int not null,
+  feed_index int NOT NULL,
   service_id text,
-  date date not null,
+  date date NOT NULL,
   exception_type int REFERENCES gtfs.exception_types(exception_type) --,
   -- CONSTRAINT gtfs_calendar_fkey FOREIGN KEY (feed_index, service_id)
     -- REFERENCES gtfs.calendar (feed_index, service_id)
@@ -198,15 +198,15 @@ CREATE TABLE gtfs.payment_methods (
 );
 
 CREATE TABLE gtfs.fare_attributes (
-  feed_index int not null,
-  fare_id text not null,
-  price double precision not null,
-  currency_type text not null,
+  feed_index int NOT NULL,
+  fare_id text NOT NULL,
+  price double precision NOT NULL,
+  currency_type text NOT NULL,
   payment_method int REFERENCES gtfs.payment_methods,
   transfers int,
   transfer_duration int,
   -- unofficial features
-  agency_id text default null,
+  agency_id text DEFAULT NULL,
   CONSTRAINT gtfs_fare_attributes_pkey PRIMARY KEY (feed_index, fare_id),
   -- CONSTRAINT gtfs_fare_attributes_fkey FOREIGN KEY (feed_index, agency_id)
   -- REFERENCES gtfs.agency (feed_index, agency_id),
@@ -215,14 +215,14 @@ CREATE TABLE gtfs.fare_attributes (
 );
 
 CREATE TABLE gtfs.fare_rules (
-  feed_index int not null,
+  feed_index int NOT NULL,
   fare_id text,
   route_id text,
   origin_id text,
   destination_id text,
   contains_id text,
   -- unofficial features
-  service_id text default null,
+  service_id text DEFAULT NULL,
   -- CONSTRAINT gtfs_fare_rules_service_fkey FOREIGN KEY (feed_index, service_id)
   -- REFERENCES gtfs.calendar (feed_index, service_id),
   -- CONSTRAINT gtfs_fare_rules_fare_id_fkey FOREIGN KEY (feed_index, fare_id)
@@ -234,13 +234,13 @@ CREATE TABLE gtfs.fare_rules (
 );
 
 CREATE TABLE gtfs.shapes (
-  feed_index int not null,
-  shape_id text not null,
-  shape_pt_lat double precision not null,
-  shape_pt_lon double precision not null,
-  shape_pt_sequence int not null,
+  feed_index int NOT NULL,
+  shape_id text NOT NULL,
+  shape_pt_lat double precision NOT NULL,
+  shape_pt_lon double precision NOT NULL,
+  shape_pt_sequence int NOT NULL,
   -- optional
-  shape_dist_traveled double precision default null
+  shape_dist_traveled double precision DEFAULT NULL
 );
 
 CREATE INDEX gtfs_shapes_shape_key ON gtfs.shapes (shape_id);
@@ -274,19 +274,19 @@ CREATE TRIGGER shape_geom_trigger AFTER INSERT ON gtfs.shapes
 
 -- Create new table to store the shape geometries
 CREATE TABLE gtfs.shape_geoms (
-  feed_index int not null,
-  shape_id text not null,
-  length numeric(12, 2) not null,
+  feed_index int NOT NULL,
+  shape_id text NOT NULL,
+  length numeric(12, 2) NOT NULL,
   CONSTRAINT gtfs_shape_geom_pkey PRIMARY KEY (feed_index, shape_id)
 );
 -- Add the_geom column to the gtfs.shape_geoms table - a 2D linestring geometry
 SELECT AddGeometryColumn('gtfs', 'shape_geoms', 'the_geom', 4326, 'LINESTRING', 2);
 
 CREATE TABLE gtfs.trips (
-  feed_index int not null,
-  route_id text not null,
-  service_id text not null,
-  trip_id text not null,
+  feed_index int NOT NULL,
+  route_id text NOT NULL,
+  service_id text NOT NULL,
+  trip_id text NOT NULL,
   trip_headsign text,
   direction_id int,
   block_id text,
@@ -295,11 +295,11 @@ CREATE TABLE gtfs.trips (
   wheelchair_accessible int REFERENCES gtfs.wheelchair_accessible(wheelchair_accessible),
 
   -- unofficial features
-  direction text default null,
-  schd_trip_id text default null,
-  trip_type text default null,
-  exceptional int default null,
-  bikes_allowed int default null,
+  direction text DEFAULT NULL,
+  schd_trip_id text DEFAULT NULL,
+  trip_type text DEFAULT NULL,
+  exceptional int DEFAULT NULL,
+  bikes_allowed int DEFAULT NULL,
   CONSTRAINT gtfs_trips_pkey PRIMARY KEY (feed_index, trip_id),
   -- CONSTRAINT gtfs_trips_route_id_fkey FOREIGN KEY (feed_index, route_id)
   -- REFERENCES gtfs.routes (feed_index, route_id),
@@ -312,14 +312,16 @@ CREATE TABLE gtfs.trips (
 CREATE INDEX gtfs_trips_trip_id ON gtfs.trips (trip_id);
 CREATE INDEX gtfs_trips_service_id ON gtfs.trips (feed_index, service_id);
 
+
+
 CREATE TABLE gtfs.stop_times (
-  feed_index int not null,
-  trip_id text not null,
+  feed_index int NOT NULL,
+  trip_id text NOT NULL,
   -- Check that casting to time interval works.
   arrival_time interval CHECK (arrival_time::interval = arrival_time::interval),
   departure_time interval CHECK (departure_time::interval = departure_time::interval),
   stop_id text,
-  stop_sequence int not null,
+  stop_sequence int NOT NULL,
   stop_headsign text,
   pickup_type int REFERENCES gtfs.pickup_dropoff_types(type_id),
   drop_off_type int REFERENCES gtfs.pickup_dropoff_types(type_id),
@@ -328,10 +330,10 @@ CREATE TABLE gtfs.stop_times (
 
   -- unofficial features
   -- the following are not in the spec
-  continuous_drop_off int default null,
-  continuous_pickup  int default null,
-  arrival_time_seconds int default null,
-  departure_time_seconds int default null,
+  continuous_drop_off int DEFAULT NULL,
+  continuous_pickup  int DEFAULT NULL,
+  arrival_time_seconds int DEFAULT NULL,
+  departure_time_seconds int DEFAULT NULL,
   CONSTRAINT gtfs_stop_times_pkey PRIMARY KEY (feed_index, trip_id, stop_sequence),
   -- CONSTRAINT gtfs_stop_times_trips_fkey FOREIGN KEY (feed_index, trip_id)
   -- REFERENCES gtfs.trips (feed_index, trip_id),
@@ -343,6 +345,20 @@ CREATE TABLE gtfs.stop_times (
 CREATE INDEX gtfs_stop_times_key ON gtfs.stop_times (feed_index, trip_id, stop_id);
 CREATE INDEX arr_time_index ON gtfs.stop_times (arrival_time_seconds);
 CREATE INDEX dep_time_index ON gtfs.stop_times (departure_time_seconds);
+
+-- Insert dummy entires to 'calendars' if 'calendar_dates' is present
+CREATE OR REPLACE FUNCTION gtfs.calendar_insert()
+  RETURNS trigger AS
+  $BODY$
+  BEGIN
+    INSERT INTO gtfs.calendar VALUES (NEW.feed_index, NEW.service_id, 0, 0, 0, 0, 0, 0, 0, '1970-01-01', '2099-12-31')
+      ON CONFLICT DO NOTHING;
+  RETURN NEW;
+  END;
+  $BODY$
+LANGUAGE plpgsql;
+
+
 
 -- "Safely" locate a point on a (possibly complicated) line by using minimum and maximum distances.
 -- Unlike st_LineLocatePoint, this accepts and returns absolute distances, not fractions
@@ -372,7 +388,7 @@ CREATE OR REPLACE FUNCTION gtfs.dist_insert()
       LEFT JOIN gtfs.shape_geoms AS route ON (route.feed_index = stop.feed_index and trips.shape_id = route.shape_id)
       WHERE stop_id = NEW.stop_id
         AND stop.feed_index = COALESCE(NEW.feed_index::integer, (
-          SELECT column_default::integer
+          SELECT column_DEFAULT::integer
           FROM information_schema.columns
           WHERE (table_schema, table_name, column_name) = ('gtfs', 'stop_times', 'feed_index')
         ))
@@ -423,11 +439,11 @@ CREATE TRIGGER stop_times_dist_stmt_trigger AFTER INSERT ON gtfs.stop_times
   FOR EACH STATEMENT EXECUTE PROCEDURE gtfs.dist_update();
 
 CREATE TABLE gtfs.frequencies (
-  feed_index int not null,
+  feed_index int NOT NULL,
   trip_id text,
-  start_time text not null CHECK (start_time::interval = start_time::interval),
-  end_time text not null CHECK (end_time::interval = end_time::interval),
-  headway_secs int not null,
+  start_time text NOT NULL CHECK (start_time::interval = start_time::interval),
+  end_time text NOT NULL CHECK (end_time::interval = end_time::interval),
+  headway_secs int NOT NULL,
   exact_times int,
   start_time_seconds int,
   end_time_seconds int,
@@ -439,15 +455,15 @@ CREATE TABLE gtfs.frequencies (
 );
 
 CREATE TABLE gtfs.transfers (
-  feed_index int not null,
+  feed_index int NOT NULL,
   from_stop_id text,
   to_stop_id text,
   transfer_type int REFERENCES gtfs.transfer_types(transfer_type),
   min_transfer_time int,
   -- Unofficial fields
-  from_route_id text default null,
-  to_route_id text default null,
-  service_id text default null,
+  from_route_id text DEFAULT NULL,
+  to_route_id text DEFAULT NULL,
+  service_id text DEFAULT NULL,
   -- CONSTRAINT gtfs_transfers_from_stop_fkey FOREIGN KEY (feed_index, from_stop_id)
   --  REFERENCES gtfs.stops (feed_index, stop_id),
   --CONSTRAINT gtfs_transfers_to_stop_fkey FOREIGN KEY (feed_index, to_stop_id)

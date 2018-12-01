@@ -11,3 +11,9 @@ CREATE TRIGGER gtfs.stop_times_dist_stmt_trigger AFTER INSERT ON gtfs.stop_times
 
 CREATE TRIGGER gtfs.stop_geom_trigger BEFORE INSERT OR UPDATE ON gtfs.stops
     FOR EACH ROW EXECUTE PROCEDURE gtfs.stop_geom_update();
+
+CREATE TRIGGER add_to_calendars
+  BEFORE INSERT OR UPDATE
+  ON gtfs.calendar_dates
+  FOR EACH ROW
+  EXECUTE PROCEDURE gtfs.calendar_insert();
