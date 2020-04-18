@@ -1,3 +1,4 @@
+dist: bionic
 language: minimal
 
 services:
@@ -34,17 +35,23 @@ before_install:
   - sudo ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
   - sudo dpkg-reconfigure --frontend noninteractive tzdata
   - sudo apt-get update -qq
-  - sudo apt-get install -y postgis
-  - sudo -u postgres psql -c "CREATE EXTENSION postgis;"
+  - sudo apt -y install gnupg2
+  - find /usr -name postgis.control
+  # Install postgis install from postgres repo
+  - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
+  - echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
+  - sudo apt -y install postgresql-10-postgis-2.4 postgresql-10-postgis-2.4-scripts
+  - find /usr -name postgis.control
   # download latest GTFS data
   - curl -Lo gtfs.zip http://transitfeeds.com/p/${FEED}/latest/download
   - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
   - sudo service postgresql restart
   - sleep 1
 
-install: make -e init
-
-before_script: make -e drop_constraints
+before_script: 
+  - psql -U postgres -c "create extension postgis"
+  - make -e init
+  - make -e drop_constraints
 
 script: make --warn-undefined-variables -e load GTFS=gtfs.zip
 
