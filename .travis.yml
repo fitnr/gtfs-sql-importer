@@ -35,16 +35,16 @@ before_install:
   - sudo dpkg-reconfigure --frontend noninteractive tzdata
   - sudo apt-get update -qq
   - sudo apt-get install -y postgis
-  - psql -U postgres -c "create extension postgis"
   # download latest GTFS data
   - curl -Lo gtfs.zip http://transitfeeds.com/p/${FEED}/latest/download
   - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
   - sudo service postgresql restart
   - sleep 1
 
-install: make -e init
-
-before_script: make -e drop_constraints
+before_script: 
+  - psql -U postgres -c "create extension postgis"
+  - make -e init
+  - make -e drop_constraints
 
 script: make --warn-undefined-variables -e load GTFS=gtfs.zip
 
