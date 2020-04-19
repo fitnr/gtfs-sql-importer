@@ -9,6 +9,8 @@ addons:
     packages:
     - postgresql-10
     - postgresql-client-10
+    - postgresql-10-postgis-2.4 
+    - postgresql-10-postgis-scripts
 
 git:
   depth: 3
@@ -34,7 +36,6 @@ before_install:
   - sudo ln -fs /usr/share/zoneinfo/America/New_York /etc/localtime
   - sudo dpkg-reconfigure --frontend noninteractive tzdata
   - sudo apt-get update -qq
-  - sudo apt-get install -y postgis
   # download latest GTFS data
   - curl -Lo gtfs.zip http://transitfeeds.com/p/${FEED}/latest/download
   - sudo sed -i -e '/local.*peer/s/postgres/all/' -e 's/peer\|md5/trust/g' /etc/postgresql/*/main/pg_hba.conf
