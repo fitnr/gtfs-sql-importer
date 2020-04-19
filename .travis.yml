@@ -1,3 +1,4 @@
+dist: bionic
 language: minimal
 
 services:
@@ -9,8 +10,7 @@ addons:
     packages:
     - postgresql-10
     - postgresql-client-10
-    - postgresql-10-postgis-2.4 
-    - postgresql-10-postgis-scripts
+    - postgresql-10-postgis-2.4
 
 git:
   depth: 3
