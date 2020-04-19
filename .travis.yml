@@ -21,13 +21,12 @@ env:
 
   matrix:
     - FEED=greater-cleveland-regional-transit-authority/214
-   # Disable temporatilly to get faster travis feedback
-   # - FEED=abq-ride/52
-   # - FEED=connecticut-transit/323/gtfs.zip
-   # - FEED=actv/631
-   # - FEED=transperth/2
-   # - FEED=greenbus-thailand/784
-   # - FEED=subterraneos-de-buenos-aires/541
+    - FEED=abq-ride/52
+    - FEED=connecticut-transit/323/gtfs.zip
+    - FEED=actv/631
+    - FEED=transperth/2
+    - FEED=greenbus-thailand/784
+    - FEED=subterraneos-de-buenos-aires/541
 
 before_install:
   - make --version
@@ -38,7 +37,7 @@ before_install:
   - sudo apt-get update -qq
   - sudo apt -y install gnupg2
   - find /usr -name postgis.control
-  # Try postgis install from postgres repo
+  # Install postgis install from postgres repo
   - wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
   - echo "deb http://apt.postgresql.org/pub/repos/apt/ `lsb_release -cs`-pgdg main" |sudo tee  /etc/apt/sources.list.d/pgdg.list
   - sudo apt -y install postgresql-10-postgis-2.4 postgresql-10-postgis-2.4-scripts
